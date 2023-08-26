@@ -1,0 +1,35 @@
+{%  extends 'main/base.html' %}
+
+{% block content %}
+<div class="jumbotron bg-transparent"></div>
+
+    <div class="container overflow-hidden text-center">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="p-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Профиль</h3>
+                        </div>
+                        <div class="card-body text-left">
+                            {% for item in object_list %}
+                              <h6>Имя:</h6>
+                              <p class="fw-bold">{{item.first_name}}</p>
+                              <h6>Фамилия:</h6>
+                              <p class="fw-bold">{{item.last_name}}</p>
+                              <h6>Email:</h6>
+                              <p class="fw-bold">{{ item.email }}</p>
+                            {% endfor %}
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary" href="{% url 'users:edit_profile' %}" type="button">
+                                Редактировать
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
