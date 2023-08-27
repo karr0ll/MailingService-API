@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 mt-5 mb-5 text-center">
+            <h2>{{ title }}</h2>
+        </div>
+        <div class="container text-center col-8">
+                <form method="post" class="row" enctype="multipart/form-data">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                Удаление рассылки
+                            </div>
+                            <div class="card-body">
+                                {% csrf_token %}
+                                <p>Удалить рассылку "{{ object.subject }}"?</p>
+                                <button type="submit" class="btn btn-danger text-white">
+                                    Удалить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+{% endblock %}

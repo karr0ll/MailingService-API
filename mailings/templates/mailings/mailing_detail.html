@@ -1,0 +1,20 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+        <div class="col-9 mt-5 mb-5 text-center">
+            <h2>{{ object.subject }}</h2>
+        </div>
+        <div class="col-9 mt-5 mb-5 text-center">
+                <p>{{ object.body }}</p>
+        </div>
+        <div class="col-9 mt-5 mb-5 text-center">
+                <p>
+                    Подписанные клиенты:
+                </p>
+                {% for customer in object.customer_set.all %}
+                    <p>
+                    {{ customer.email }}
+                    </p>
+                {% endfor %}
+        </div>
+{% endblock %}
