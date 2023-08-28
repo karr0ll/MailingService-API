@@ -11,4 +11,4 @@ class MailingListSettingsAdmin(admin.ModelAdmin):
 @admin.register(Mailing)
 class EmailAdmin(admin.ModelAdmin):
     list_display = ('subject', 'body',)
-    filter_horizontal = ('customers',)
+    filter_horizontal = ('customer',)

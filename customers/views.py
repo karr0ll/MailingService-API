@@ -16,7 +16,6 @@ class CustomerListView(LoginRequiredMixin, ListView):
 class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerCreateForm
-    # fields = ('first_name', 'last_name', 'email', 'comment')
     extra_context = {'title': 'Добавить клиента'}
     success_url = reverse_lazy('customers:list_customers')
 
@@ -28,10 +27,9 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         if form.is_valid():
-            user = self.request.user # a1
-            new_customer = form.save() # p1
-            new_customer.owner.add(user)
-
+            new_customer = form.save()
+            new_customer.owner = self.request.user
+            new_customer.save()
             return super().form_valid(form)
 
 
