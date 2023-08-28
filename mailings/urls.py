@@ -2,11 +2,7 @@ from django.urls import path
 
 from mailings.apps import MailingsConfig
 from mailings.views import MailingListView, MailingCreateView, MailingUpdateView, MailingDetailView, MailingDeleteView
-from users.apps import UsersConfig
-from users.service_users import generate_new_password
-from users.views import LoginView, LogoutView, UserProfileView, RegisterView, \
-    UserConfirmEmailView, EmailConfirmationSentView, EmailConfirmedView, \
-    EmailConfirmationFailedView, UserUpdateView
+
 
 app_name = MailingsConfig.name
 

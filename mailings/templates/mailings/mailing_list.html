@@ -25,9 +25,9 @@
                     {% for object in object_list %}
                         <tbody>
                             <tr>
-                              <th scope="row">{{ object.pk }}</th>
+                              <th scope="row">{{ object.id }}</th>
                               <td>
-                                  <a href="{% url 'mailings:detail' object.pk %}">
+                                  <a href="{% url 'mailings:detail' object.id %}">
                                   {{ object.subject }}
                                   </a>
                               </td>

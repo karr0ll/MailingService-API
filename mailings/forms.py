@@ -12,4 +12,4 @@ class MailingCreateForm(forms.ModelForm):
 
     class Meta:
         model = Mailing
-        fields = ['subject', 'body', 'customer']
+        fields = '__all__'#['subject', 'body', 'customer']

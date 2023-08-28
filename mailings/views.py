@@ -9,6 +9,12 @@ class MailingListView(ListView):
     model = Mailing
     extra_context = {"title": "Рассылки"}
 
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data()
+    #     owner = self.request.user
+    #     context_data['object'] =
+    #     return context_data
+
 
 class MailingCreateView(CreateView):
     model = Mailing

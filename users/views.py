@@ -1,7 +1,10 @@
+from smtplib import SMTPException
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, resolve_url
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
@@ -31,7 +34,6 @@ class RegisterView(CreateView):
         user = form.save()
         user.is_active = False
         user.verification_code = generated_code
-        user.save()
 
         verification_code = str(generated_code) + str(user.pk)
         activation_url = self.request.build_absolute_uri(
@@ -41,7 +43,12 @@ class RegisterView(CreateView):
                 }
             )
         )
-        send_verification_link(activation_url, user.email)
+        try:
+            send_verification_link(activation_url, user.email)  # TODO:добавить обработку исключения
+            user.save()
+        except SMTPException as e:
+            pass
+
         return redirect('users:verification_link_sent')
 
 
@@ -91,7 +98,7 @@ class EmailConfirmationFailedView(TemplateView):
         return context
 
 
-class UserProfileView(LoginRequiredMixin,  ListView):
+class UserProfileView(LoginRequiredMixin, ListView):
     login_url = 'users:login'
 
     model = User
@@ -110,5 +117,3 @@ class UserUpdateView(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
-
-

@@ -22,7 +22,7 @@ MAILING_PERIOD_CHOICES = (
 class Mailing(models.Model):
     subject = models.TextField(verbose_name='Тема рассылки')
     body = models.TextField(verbose_name='Содержание рассылки')
-    customer = models.ManyToManyField(Customer, verbose_name='Клиенты')
+    customers = models.ManyToManyField(Customer, verbose_name='Клиенты')
     user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
 
     def __str__(self):
