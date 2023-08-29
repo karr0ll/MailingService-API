@@ -104,10 +104,16 @@ class UserProfileView(LoginRequiredMixin, ListView):
     model = User
     extra_context = {"title": "Профиль"}
 
+
     def get_template_names(self):
         template_name = 'users/profile.html'
         return template_name
 
+    def get_context_data(self, *args, **kwargs):
+        context_data = super().get_context_data(*args, **kwargs)
+        user = self.request.user
+        context_data['user'] = user
+        return context_data
 
 class UserUpdateView(UpdateView):
     model = User

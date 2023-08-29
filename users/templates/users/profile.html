@@ -13,14 +13,12 @@
                             <h3>Профиль</h3>
                         </div>
                         <div class="card-body text-left">
-                            {% for item in object_list %}
                               <h6>Имя:</h6>
-                              <p class="fw-bold">{{item.first_name}}</p>
+                              <p class="fw-bold">{{user.first_name}}</p>
                               <h6>Фамилия:</h6>
-                              <p class="fw-bold">{{item.last_name}}</p>
+                              <p class="fw-bold">{{user.last_name}}</p>
                               <h6>Email:</h6>
-                              <p class="fw-bold">{{ item.email }}</p>
-                            {% endfor %}
+                              <p class="fw-bold">{{user.email }}</p>
                         </div>
                         <div class="card-footer">
                             <a class="btn btn-primary" href="{% url 'users:edit_profile' %}" type="button">
