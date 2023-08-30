@@ -1,5 +1,6 @@
 {% extends 'main/base.html' %}
 
+{#{% load template_tags %}#}
 {% block content %}
     <div class="row">
         <div class="col-12 mt-5 mb-5 text-center">
@@ -33,9 +34,12 @@
                               </td>
                               <td>{{ object.body|truncatechars:50 }}</td>
                                 <td>
-                                    {{ object.customers.all }}
-                                    {% for customer in object.customers_set.all %}
+                                    {% for customer in object.customers.all %}
+                                        {% if object.customers.all|length > 1 %}
+                                        {{ customer.email }},
+                                        {% else %}
                                         {{ customer.email }}
+                                        {% endif %}
                                     {% endfor %}
                                 </td>
                                 <td>

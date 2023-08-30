@@ -2,16 +2,16 @@
 
 {% block content %}
         <div class="col-9 mt-5 mb-5 text-center">
-            <h2>{{ object.subject }}</h2>
+            <h2>Тема: <br>{{ object.subject }}</h2>
         </div>
         <div class="col-9 mt-5 mb-5 text-center">
-                <p>{{ object.body }}</p>
+                <p>Содержание рассылки: <br>{{ object.body }}</p>
         </div>
         <div class="col-9 mt-5 mb-5 text-center">
                 <p>
                     Подписанные клиенты:
                 </p>
-                {% for customer in object.customer_set.all %}
+                {% for customer in object.customers.all %}
                     <p>
                     {{ customer.email }}
                     </p>

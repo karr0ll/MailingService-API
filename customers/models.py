@@ -12,7 +12,7 @@ class Customer(models.Model):
     email = models.EmailField(max_length=255, verbose_name='email', unique=False)
     comment = models.TextField(verbose_name='Комментарий', **NULLABLE)
     owner = models.ManyToManyField(User, verbose_name='Пользователь')
-    # mailing = models.ManyToManyField(Mailing, verbose_name='Рассылка', on_delete=models.CASCADE, **NULLABLE)
+    # mailing = models.ManyToManyField(Mailing, verbose_name='Рассылка')
 
     def __str__(self):
         return f'{self.email} {self.first_name} {self.last_name}'
