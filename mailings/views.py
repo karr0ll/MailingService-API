@@ -36,6 +36,11 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
     def get_title(self):
         return self.object.title
 
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     queryset = queryset.filter(mailingsettings__mailing_id=self.kwargs.get('pk'))
+    #     return queryset
+
 
 class MailingUpdateView(LoginRequiredMixin, UpdateView):
     model = Mailing
@@ -50,3 +55,25 @@ class MailingDeleteView(DeleteView):
     model = Mailing
     extra_context = {'title': 'Удалить рассылку'}
     success_url = reverse_lazy('mailings:list')
+
+
+class MailingSettingsSetView(CreateView):
+    model = MailingSettings
+    form_class = MailingSettingsSetForm
+    extra_context = {'title': 'Настроить рассылку'}
+    success_url = reverse_lazy('mailings:list')
+
+    def get_template_names(self):
+        template_name = 'mailings/mailing_settings_form.html'
+        return template_name
+
+    # def form_valid(self, form):
+    #     if form.is_valid():
+    #         customers = form.cleaned_data['customers']
+    #         form.instance.user = self.request.user
+    #         new_mailing = form.save()
+    #         for customer in customers:
+    #             new_mailing.customers.add(customer.pk)
+    #         new_mailing.save()
+    #         return super().form_valid(form)
+

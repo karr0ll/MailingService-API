@@ -4,7 +4,7 @@ from users.apps import UsersConfig
 from users.service_users import generate_new_password
 from users.views import LoginView, LogoutView, UserProfileView, RegisterView, \
     UserConfirmEmailView, EmailConfirmationSentView, EmailConfirmedView, \
-    EmailConfirmationFailedView, UserUpdateView
+    EmailConfirmationFailedView, UserUpdateView, EmailSendingError
 
 app_name = UsersConfig.name
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('register/sending_failed', EmailSendingError.as_view(), name='sending_error'),
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('profile/edit', UserUpdateView.as_view(), name='edit_profile'),
     path('profile/generate_password/', generate_new_password, name='generate_password'),
