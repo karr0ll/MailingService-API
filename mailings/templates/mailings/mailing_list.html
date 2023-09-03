@@ -1,6 +1,5 @@
 {% extends 'main/base.html' %}
 
-{#{% load template_tags %}#}
 {% block content %}
     <div class="row">
         <div class="col-12 mt-5 mb-5 text-center">
@@ -15,13 +14,14 @@
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Тема рассылки</th>
-                        <th scope="col">Текст рассылки</th>
-                        <th scope="col">Клиент</th>
-                        <th class="w-25" scope="col">Действия</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Тема рассылки</th>
+                            <th scope="col">Текст рассылки</th>
+                            <th scope="col">Клиент</th>
+                            <th scope="col">Статус</th>
+                            <th class="w-25" scope="col">Действия</th>
+                        </tr>
                     </thead>
                     {% for object in object_list %}
                         <tbody>
@@ -43,7 +43,10 @@
                                     {% endfor %}
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary" href="{% url 'mailings:detail_settings' object.mailingsettings.pk %}">
+                                    {{ object.get_status_display }}
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary" href="{% url 'mailings:detail_settings' object.pk %}">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          width="16" height="16"
                                          fill="currentColor"

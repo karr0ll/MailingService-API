@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 mt-5 mb-5 text-center">
+            <h2>{{ title }}</h2>
+        </div>
+        <div class="col-12 mt-1" >
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Тема рассылки</th>
+                            <th scope="col">Последняя отправка рассылки</th>
+                            <th scope="col">Статус</th>
+                            <th scope="col">Сообщение ошибки</th>
+                        </tr>
+                    </thead>
+                    {% for object in object_list %}
+                        <tbody>
+                            <tr>
+                                <td>{{ object.mailing.subject|truncatechars:30 }}</td>
+                                <td>{{ object.last_attempt_time }}</td>
+                                <td>{{ object.status }}</td>
+                                <td>{{ object.error_message }}</td>
+                            </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
