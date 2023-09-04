@@ -12,7 +12,9 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class UserForm(UserCreationForm):
-
+    """
+    Форма регистрации пользователя
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -30,6 +32,9 @@ class UserForm(UserCreationForm):
 
 
 class UserProfileForm(UserChangeForm):
+    """
+    Форма обновления данных пользователя
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,3 +50,41 @@ class UserProfileForm(UserChangeForm):
             'last_name',
         )
         exclude = ('password',)
+
+
+class UserManagerForm(UserProfileForm):
+    """
+    Форма настройки активации пользователя для менеджера
+    """
+    email = forms.CharField(disabled=True, label="Email")
+    first_name = forms.CharField(disabled=True, label="Имя")
+    last_name = forms.CharField(disabled=True, label="Фамилия")
+    is_active = forms.BooleanField(required=False, label='Пользователь активен')
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['password1'].widget = forms.HiddenInput()
+    #     self.fields['password2'].widget = forms.HiddenInput()
+    #     for field_name, field in self.fields.items():
+    #         field.widget.attrs['class'] = 'form-control'
+    #
+    # class Meta:
+    #     model = User
+    #
+    #     exclude = (
+    #         'last_login',
+    #         'is_superuser',
+    #         'groups',
+    #         'user_permissions',
+    #         'is_staff',
+    #         'date_joined',
+    #         'verification_code',
+    #         'password',
+    #         'password1',
+    #         'password2',
+    #         )
+    #
+
+
+
+

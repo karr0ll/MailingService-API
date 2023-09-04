@@ -37,6 +37,13 @@
                                 Профиль
                             </a>
                         </li>
+                        {% if request.user.is_staff %}
+                        <li class="nav-item">
+                            <a href="{% url 'users:list' %}" class="nav-link link-body-emphasis">
+                                Пользователи
+                            </a>
+                        </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a href="{% url 'customers:list' %}" class="nav-link link-body-emphasis">
                                 Клиенты

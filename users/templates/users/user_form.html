@@ -14,9 +14,11 @@
                             <button type="submit" class="btn btn-primary">
                                 Сохранить
                             </button>
+                        {% if not request.user.is_staff %}
                             <a class="btn btn-warning" href="{% url 'users:generate_password' %}">
                                 Сгенерировать новый пароль
                             </a>
+                        {% endif %}
                     </div>
                 </form>
                 <div class="card-footer">

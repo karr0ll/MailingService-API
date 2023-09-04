@@ -4,7 +4,7 @@ from users.apps import UsersConfig
 from users.service_users import generate_new_password
 from users.views import LoginView, LogoutView, UserProfileView, RegisterView, \
     UserConfirmEmailView, EmailConfirmationSentView, EmailConfirmedView, \
-    EmailConfirmationFailedView, UserUpdateView, EmailSendingError
+    EmailConfirmationFailedView, UserUpdateView, EmailSendingError, UsersListView, UsersManagerUpdateView
 
 app_name = UsersConfig.name
 
@@ -20,4 +20,6 @@ urlpatterns = [
     path('profile/verification_link_sent/', EmailConfirmationSentView.as_view(), name='verification_link_sent'),
     path('profile/email_verified/', EmailConfirmedView.as_view(), name='email_verified'),
     path('profile/verification_failed/', EmailConfirmationFailedView.as_view(), name='verification_failed'),
+    path('users/list/', UsersListView.as_view(), name='list'),
+    path('users/edit/<int:pk>', UsersManagerUpdateView.as_view(), name='manager_update')
 ]

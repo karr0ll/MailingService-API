@@ -1,15 +1,15 @@
 from smtplib import SMTPException
 
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
-from django.shortcuts import redirect, resolve_url
+from django.shortcuts import redirect, resolve_url, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
-from users.forms import CustomAuthenticationForm, UserForm, UserProfileForm
+from users.forms import CustomAuthenticationForm, UserForm, UserProfileForm, UserManagerForm
 from users.models import User
 from users.service_users import code_generator, send_verification_link, password_generator, send_new_password
 
@@ -24,6 +24,9 @@ class LogoutView(BaseLogoutView):
 
 
 class RegisterView(CreateView):
+    """
+    Контроллер решистрации пользователя
+    """
     model = User
     form_class = UserForm
     success_url = reverse_lazy('users:login')
@@ -49,7 +52,6 @@ class RegisterView(CreateView):
             return redirect('users:verification_link_sent')
         except SMTPException as e:
             user.delete()
-            print(e)
             return redirect('users:sending_error')
 
 
@@ -126,6 +128,9 @@ class UserProfileView(LoginRequiredMixin, ListView):
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Контроллер обновления данных пользователя
+    """
     model = User
     success_url = reverse_lazy('users:profile')
     extra_context = {'title': 'Профиль'}
@@ -133,3 +138,56 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+
+class UsersListView(LoginRequiredMixin, ListView):
+    login_url = 'users:register'
+    redirect_field_name = 'register'
+
+    model = User
+    extra_context = {'title': 'Пользователи'}
+    template_name = 'users/users_list.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.is_staff:
+            return queryset
+
+
+class UsersManagerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    login_url = 'users:register'
+    redirect_field_name = 'register'
+    template_name = 'users/user_form.html'
+    success_url = reverse_lazy('users:list')
+
+    permission_required = ('users.change_users', 'users.view_users')
+
+    model = User
+    extra_context = {'title': 'Активация пользователя'}
+
+    def has_permission(self):
+        object_ = self.get_object()
+        user = self.request.user
+        if user.is_staff and user.has_perms(self.permission_required):
+            return object_
+        else:
+            raise PermissionError('Редактировать статус пользователя может только менеджер')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user.is_staff and user.has_perms(self.permission_required):
+            return UserManagerForm
+
+    def form_valid(self, form):
+        if form.has_changed():
+            user = get_object_or_404(User, id=self.kwargs['pk'])
+            # is_checkbox_checked = form.cleaned_data['is_active']
+            if user.is_active:
+                user.is_active = False
+            else:
+                user.is_active = True
+
+            user.save()
+        return super().form_valid(form)
+
+
