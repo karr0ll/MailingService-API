@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+
+{% load template_tags %}
+{% block content %}
+<main role="main">
+    <div class="jumbotron bg-transparent mt-1 mb-1 text-right"></div>
+
+
+    {%  for object in object_list %}
+    <div class="container text-center mt-1" style="width: 35rem;">
+        <div class="card">
+            <div class="card-body">
+                <img src="{% mediapath object.thumbnail %}" class="img-responsive pull-left" style="width: 30rem;" alt="...">
+                <h5 class="card-title">{{ object.title }}</h5>
+                <p class="card-text">{{ object.content|truncatechars:100 }}</p>
+                <small class="text-body-secondary">Опубликовано: {{ object.creation_date|date:'H:i, d F Y' }}</small></p>
+                <small class="text-body-secondary">Просмотров: {{ object.views_count }}</small></p>
+                <p>
+                    <a class="btn btn-primary" href="{% url 'blog:post_detail' object.pk %}" role="button">Подробнее &raquo;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {%  endfor %}
+
+
+
+</main>
+{%  endblock %}

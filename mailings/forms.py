@@ -28,3 +28,19 @@ class MailingSettingsUpdateForm(forms.ModelForm):
     class Meta:
         model = Mailing
         exclude = ('subject', 'body', 'user')
+
+
+class MailingSettingsManagerUpdateForm(MailingSettingsUpdateForm):
+    subject = forms.CharField(disabled=True, label="Тема")
+    body = forms.CharField(disabled=True, label="Содержание рассылки")
+    # customers = forms.MultipleChoiceField(disabled=True, label='Клиенты')
+    start_time = forms.DateTimeField(disabled=True, label='Дата начала рассылки:')
+    # interval = forms.ChoiceField(disabled=True, label='Периодичность:')
+
+
+
+    class Meta:
+        model = Mailing
+        exclude = ('user', 'customers', 'interval')
+
+

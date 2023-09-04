@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
-from mailings.forms import MailingCreateForm, MailingSettingsUpdateForm
+from mailings.forms import MailingCreateForm, MailingSettingsUpdateForm, MailingSettingsManagerUpdateForm
 from mailings.mailings_service import send_mailing
 from mailings.models import Mailing, Logs
 
@@ -38,7 +38,6 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             return redirect('users:register')
         else:
             return super().dispatch(request, *args, **kwargs)
-
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -97,10 +96,9 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         return queryset
 
 
-class MailingUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
+class MailingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     login_url = 'users:register'
     redirect_field_name = 'register'
-    permission_required = ('mailings.change_mailings', 'mailings.view_mailings')
 
     model = Mailing
     form_class = MailingCreateForm
@@ -109,10 +107,10 @@ class MailingUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     def has_permission(self):
         object_ = self.get_object()
         user = self.request.user
-        if object_.user == user or (user.is_staff and user.has_perms(self.permission_required)):
+        if object_.user != user:
             return object_
         else:
-            raise PermissionError('Редактировать продукт может только его владелец')
+            raise PermissionError('Редактировать рассылки может только пользователь')
 
     def get_success_url(self):
         return reverse('mailings:list')
@@ -144,6 +142,8 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
     login_url = 'users:register'
     redirect_filed_name = 'register'
 
+    permission_required = ('mailings.change_mailings', 'mailings.view_mailings')
+
     model = Mailing
     form_class = MailingSettingsUpdateForm
     extra_context = {'title': 'Настроить рассылку'}
@@ -153,47 +153,70 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
         template_name = 'mailings/mailing_settings_form.html'
         return template_name
 
+    def has_permission(self):
+        object_ = self.get_object()
+        user = self.request.user
+        if object_.user == user or (user.is_staff and user.has_perms(self.permission_required)):
+            return object_
+        else:
+            raise PermissionError('Редактировать настройки может только пользователь или менеджер')
+
+    def get_form_class(self):
+        user = self.request.user
+        if user.is_staff and user.has_perms(self.permission_required):
+            return MailingSettingsManagerUpdateForm
+        else:
+            return MailingSettingsUpdateForm
+
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(user=self.request.user.id)
-        return queryset
+        if self.request.user.has_perm('mailings.update'):
+            return queryset
+        else:
+            queryset = queryset.filter(user=self.request.user.id)
+            return queryset
 
     def form_valid(self, form):
         current_time = datetime.datetime.now().replace(tzinfo=pytz.UTC)
         status = ''
         error_message = ''
-        if form.has_changed():
-            customers = form.cleaned_data['customers']
-            form.instance.user = self.request.user
-            new_mailing = form.save()
-            for customer in customers:
-                new_mailing.customers.add(customer.pk)
-            new_mailing.save()
+        form.instance.user = self.request.user
+        if not form.instance.user.is_staff:
+            if form.has_changed():
+                customers = form.cleaned_data['customers']
+                new_mailing = form.save()
+                for customer in customers:
+                    new_mailing.customers.add(customer.pk)
+                new_mailing.save()
 
-            if new_mailing.status == 'enabled' and new_mailing.start_time <= current_time:
-                try:
-                    send_mailing(
-                        subject=new_mailing.subject,
-                        message=new_mailing.body,
-                        recipients=customers
-                    )
-                    status = 'Удачно'
-                    error_message = ''
+                if new_mailing.status == 'enabled' and new_mailing.start_time <= current_time:
+                    try:
+                        send_mailing(
+                            subject=new_mailing.subject,
+                            message=new_mailing.body,
+                            recipients=customers
+                        )
+                        status = 'Удачно'
+                        error_message = ''
 
-                except smtplib.SMTPException as e:
-                    status = 'Ошибка'
-                    if 'authentication failed' in str(e):
-                        error_message = 'Ошибка аутентификации в почтовом сервисе'
+                    except smtplib.SMTPException as e:
+                        status = 'Ошибка'
+                        if 'authentication failed' in str(e):
+                            error_message = 'Ошибка аутентификации в почтовом сервисе'
 
-                finally:
-                    Logs.objects.create(
-                        user=form.instance.user,
-                        last_attempt_time=current_time,
-                        status=status,
-                        mailing=new_mailing,
-                        error_message=error_message
-                    )
-        return super().form_valid(form)
+                    finally:
+                        Logs.objects.create(
+                            user=form.instance.user,
+                            last_attempt_time=current_time,
+                            status=status,
+                            mailing=new_mailing,
+                            error_message=error_message
+                        )
+            return super().form_valid(form)
+        else:
+            updated_settings = form.save()
+            updated_settings.save()
+            return super().form_valid(form)
 
 
 class MailingLogsListView(LoginRequiredMixin, ListView):

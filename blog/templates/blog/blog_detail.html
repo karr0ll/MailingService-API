@@ -1,0 +1,19 @@
+{% extends 'main/base.html' %}
+
+{% load template_tags %}
+{% block content %}
+        <div class="container text-center" style="width: 55rem;">
+            <div class="card">
+                <div class="card-body">
+                    <img src="{% mediapath object.thumbnail %}" class="img-responsive pull-left" style="width: 50rem;" alt="...">
+                    <h5 class="card-title">{{ object.title }} </h5>
+                    <p class="card-text">{{ object.content }} </p>
+                    <small class="text-body-secondary">Опубликовано: {{ object.creation_date|date:'H:i d.m.Y' }}</small></p>
+                    <small class="text-body-secondary">Просмотров: {{ object.views_count }}</small></p>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+</main>
+{%  endblock %}
