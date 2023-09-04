@@ -11,6 +11,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=250, verbose_name='Имя', **NULLABLE)
     last_name = models.CharField(max_length=250, verbose_name='Фамилия', **NULLABLE)
     verification_code = models.CharField(max_length=256, verbose_name='Код проверки', **NULLABLE)
+    is_active = models.BooleanField(default=True, verbose_name="Пользователь активен")
 
     # переопределение поля юзернейма
     USERNAME_FIELD = 'email'
