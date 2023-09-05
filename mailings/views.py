@@ -48,10 +48,10 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         current_time = datetime.datetime.now().replace(tzinfo=pytz.UTC)
         status = ''
         error_message = ''
+        user = form.instance.user = self.request.user
 
         if form.is_valid():
             customers = form.cleaned_data['customers']
-            form.instance.user = self.request.user
             new_mailing = form.save()
             for customer in customers:
                 new_mailing.customers.add(customer.pk)
@@ -72,13 +72,12 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
                         error_message = 'Ошибка аутентификации в почтовом сервисе'
                 finally:
                     Logs.objects.create(
-                        user=form.instance.user,
+                        user=user,
                         last_attempt_time=current_time,
                         status=status,
                         mailing=new_mailing,
                         error_message=error_message
                     )
-
             return super().form_valid(form)
 
 
@@ -177,23 +176,28 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
             return queryset
 
     def form_valid(self, form):
+        # TODO: поправить баг с перезаписью пользователя
         current_time = datetime.datetime.now().replace(tzinfo=pytz.UTC)
         status = ''
         error_message = ''
-        form.instance.user = self.request.user
-        if not form.instance.user.is_staff:
-            if form.has_changed():
+        user = form.instance.user = self.request.user
+        print(user)
+        if form.has_changed():
+            if user.is_staff:
+                updated_settings = form.save()
+                updated_settings.save()
+            else:
                 customers = form.cleaned_data['customers']
-                new_mailing = form.save()
+                updated_settings = form.save()
                 for customer in customers:
-                    new_mailing.customers.add(customer.pk)
-                new_mailing.save()
+                    updated_settings.customers.add(customer.pk)
+                updated_settings.save()
 
-                if new_mailing.status == 'enabled' and new_mailing.start_time <= current_time:
+                if updated_settings.status == 'enabled' and updated_settings.start_time <= current_time:
                     try:
                         send_mailing(
-                            subject=new_mailing.subject,
-                            message=new_mailing.body,
+                            subject=updated_settings.subject,
+                            message=updated_settings.body,
                             recipients=customers
                         )
                         status = 'Удачно'
@@ -203,21 +207,15 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
                         status = 'Ошибка'
                         if 'authentication failed' in str(e):
                             error_message = 'Ошибка аутентификации в почтовом сервисе'
-
                     finally:
                         Logs.objects.create(
-                            user=form.instance.user,
+                            user=user,
                             last_attempt_time=current_time,
                             status=status,
-                            mailing=new_mailing,
+                            mailing=updated_settings,
                             error_message=error_message
                         )
-            return super().form_valid(form)
-        else:
-            updated_settings = form.save()
-            updated_settings.save()
-            return super().form_valid(form)
-
+        return super().form_valid(form)
 
 class MailingLogsListView(LoginRequiredMixin, ListView):
     login_url = 'users:register'

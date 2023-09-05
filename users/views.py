@@ -20,7 +20,7 @@ class LoginView(BaseLoginView):
 
 
 class LogoutView(BaseLogoutView):
-    pass
+    template_name = 'users/login.html'
 
 
 class RegisterView(CreateView):

@@ -8,7 +8,7 @@ def send_verification_link(activation_url, user_email):
         message=f'Пожалуйста, '
                 f'перейдите по следующей ссылке, '
                 f'чтобы подтвердить свой адрес электронной почты: '
-                f'http://127.0.0.1:8000{activation_url}',
+                f'{activation_url}',
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[user_email],
         fail_silently=False
