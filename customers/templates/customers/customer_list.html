@@ -16,7 +16,6 @@
                     <th scope="col">Имя</th>
                     <th scope="col">Фамилия</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Рассылка</th>
                     <th scope="col">Действия</th>
                 </tr>
                 </thead>
@@ -27,7 +26,6 @@
                             <td>{{ object.first_name }}</td>
                             <td>{{ object.last_name }}</td>
                             <td>{{ object.email }}</td>
-                            <td>{{ object.mailing }}</td>
                             <td>
                                 <a class="btn btn-primary" href="{% url 'customers:update' object.pk %}">
                                     <svg xmlns="http://www.w3.org/2000/svg"
