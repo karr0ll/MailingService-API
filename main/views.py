@@ -12,10 +12,10 @@ class IndexView(LoginRequiredMixin, TemplateView):
     }
 
     def get_context_data(self, *args, **kwargs):
+        user = self.request.user
         context = super().get_context_data(*args, **kwargs)
-        context['mailing_count'] = Mailing.objects.all().count()
-        context['enabled_mailing'] = Mailing.objects.filter(status='enabled').count()
-        # context['unique_users'] = Mailing.objects
-        # print(Customer.mailing_set.all())
+        context['mailing_count'] = Mailing.objects.filter(user=user).count()
+        context['enabled_mailing'] = Mailing.objects.filter(user=user).filter(status='enabled').count()
+        context['unique_users'] = Customer.objects.filter(owner=user).distinct('email').count()
         return context
 
