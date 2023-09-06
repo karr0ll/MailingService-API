@@ -1,5 +1,6 @@
 __all__ = [
-    'do_send_mail'
+    'do_send_mail',
+    'send_mail_and_log'
 ]
 
 from .send_mail import do_send_mail
