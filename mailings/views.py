@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from mailings.forms import MailingCreateForm, MailingSettingsUpdateForm, MailingSettingsManagerUpdateForm
-from mailings.mailings_service import send_mailing
+from mailings.mailings_service import do_send_mail, send_mail_and_log
 from mailings.models import Mailing, Logs
 
 
@@ -56,29 +56,39 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             for customer in customers:
                 new_mailing.customers.add(customer.pk)
             new_mailing.save()
-
-            if new_mailing.status == 'enabled' and new_mailing.start_time <= current_time:
-                try:
-                    send_mailing(
-                        subject=new_mailing.subject,
-                        message=new_mailing.body,
-                        recipients=customers
-                    )
-                    status = 'Удачно'
-                    error_message = ''
-                except smtplib.SMTPException as e:
-                    status = 'Ошибка'
-                    if 'authentication failed' in str(e):
-                        error_message = 'Ошибка аутентификации в почтовом сервисе'
-                finally:
-                    Logs.objects.create(
-                        user=user,
-                        last_attempt_time=current_time,
-                        status=status,
-                        mailing=new_mailing,
-                        error_message=error_message
-                    )
-            return super().form_valid(form)
+            send_mail_and_log(
+                new_mailing=new_mailing,
+                current_time=current_time,
+                customers=customers,
+                user=user,
+                status=status,
+                error_message=error_message
+            )
+        return super().form_valid(form)
+            # if new_mailing.status == 'enabled' and new_mailing.start_time <= current_time:
+            #     try:
+            #         send_mail(
+            #             subject=new_mailing.subject,
+            #             message=new_mailing.body,
+            #             recipients=customers
+            #         )
+            #         status = 'Удачно'
+            #         error_message = ''
+            #     except smtplib.SMTPException as e:
+            #         status = 'Ошибка'
+            #         if 'authentication failed' in str(e):
+            #             error_message = 'Ошибка аутентификации в почтовом сервисе'
+            #     finally:
+            #         Logs.objects.create(
+            #             user=user,
+            #             last_attempt_time=current_time,
+            #             status=status,
+            #             mailing=new_mailing,
+            #             error_message=error_message
+            #         )
+            #
+            #
+            # return super().form_valid(form)
 
 
 class MailingDetailView(LoginRequiredMixin, DetailView):
@@ -193,29 +203,39 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
                     updated_settings.customers.add(customer.pk)
                 updated_settings.save()
 
-                if updated_settings.status == 'enabled' and updated_settings.start_time <= current_time:
-                    try:
-                        send_mailing(
-                            subject=updated_settings.subject,
-                            message=updated_settings.body,
-                            recipients=customers
-                        )
-                        status = 'Удачно'
-                        error_message = ''
-
-                    except smtplib.SMTPException as e:
-                        status = 'Ошибка'
-                        if 'authentication failed' in str(e):
-                            error_message = 'Ошибка аутентификации в почтовом сервисе'
-                    finally:
-                        Logs.objects.create(
-                            user=user,
-                            last_attempt_time=current_time,
-                            status=status,
-                            mailing=updated_settings,
-                            error_message=error_message
-                        )
+                send_mail_and_log(
+                    new_mailing=updated_settings,
+                    current_time=current_time,
+                    customers=customers,
+                    user=user,
+                    status=status,
+                    error_message=error_message
+                )
         return super().form_valid(form)
+
+        #         if updated_settings.status == 'enabled' and updated_settings.start_time <= current_time:
+        #             try:
+        #                 send_mail(
+        #                     subject=updated_settings.subject,
+        #                     message=updated_settings.body,
+        #                     recipients=customers
+        #                 )
+        #                 status = 'Удачно'
+        #                 error_message = ''
+        #
+        #             except smtplib.SMTPException as e:
+        #                 status = 'Ошибка'
+        #                 if 'authentication failed' in str(e):
+        #                     error_message = 'Ошибка аутентификации в почтовом сервисе'
+        #             finally:
+        #                 Logs.objects.create(
+        #                     user=user,
+        #                     last_attempt_time=current_time,
+        #                     status=status,
+        #                     mailing=updated_settings,
+        #                     error_message=error_message
+        #                 )
+        # return super().form_valid(form)
 
 class MailingLogsListView(LoginRequiredMixin, ListView):
     login_url = 'users:register'
