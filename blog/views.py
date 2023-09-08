@@ -5,7 +5,7 @@ from blog.models import Blog
 
 
 class TitleViewMixin:
-    """Класс получения title"""
+    """Контроллер получения title"""
     title = ""
 
     def get_title(self):
@@ -20,7 +20,7 @@ class TitleViewMixin:
 
 
 class BlogListView(ListView):
-    """Класс вывода всех записей блога"""
+    """Контроллер вывода всех записей блога"""
     model = Blog
     extra_context = {"title": "Блог"}
 
@@ -32,7 +32,7 @@ class BlogListView(ListView):
 
 
 class BlogDetailView(TitleViewMixin, DetailView):
-    """Класс отображения данных об одном посте"""
+    """Контроллер отображения данных об одном посте"""
     model = Blog
 
     def get_title(self):
