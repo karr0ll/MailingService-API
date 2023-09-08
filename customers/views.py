@@ -7,6 +7,7 @@ from customers.models import Customer
 
 
 class CustomerListView(LoginRequiredMixin, ListView):
+    """Контроллер вывода списка всех клиентов"""
     model = Customer
     login_url = 'users:login'
 
@@ -14,18 +15,22 @@ class CustomerListView(LoginRequiredMixin, ListView):
 
 
 class CustomerCreateView(LoginRequiredMixin, CreateView):
+    """Контроллер создания клиента"""
+
     model = Customer
     form_class = CustomerCreateForm
     extra_context = {'title': 'Добавить клиента'}
     success_url = reverse_lazy('customers:list')
 
     def get_context_data(self, **kwargs):
+        """Метод получения контекста"""
         context_data = super().get_context_data()
         user = self.request.user
         context_data['user'] = user
         return context_data
 
     def form_valid(self, form):
+        """Метод получения данных из формы"""
         if form.is_valid():
             user = self.request.user
             new_customer = form.save()
@@ -35,15 +40,18 @@ class CustomerCreateView(LoginRequiredMixin, CreateView):
 
 
 class CustomerUpdateView(UpdateView):
+    """Контроллер обновления клиента"""
     model = Customer
     form_class = CustomerCreateForm
     extra_context = {'title': 'Редактировать клиента'}
 
     def get_success_url(self):
+        """Метод переадресации после создания пользователя"""
         return reverse('customers:list')
 
 
 class CustomerDeleteView(DeleteView):
+    """Контроллер удаления клиента"""
     model = Customer
     extra_context = {'title': 'Удалить клиента'}
     success_url = reverse_lazy('customers:list')
