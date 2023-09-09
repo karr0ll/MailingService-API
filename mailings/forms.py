@@ -4,6 +4,7 @@ from mailings.models import Mailing
 
 
 class MailingCreateForm(forms.ModelForm):
+    """Форма создания рассылки"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -12,13 +13,14 @@ class MailingCreateForm(forms.ModelForm):
 
     class Meta:
         model = Mailing
-        exclude = ('user',)
+        exclude = ('user', 'send_datetime', 'next_attempt')
         widgets = {
             'start_time': forms.DateInput(attrs=dict(type='datetime-local'))
         }
 
 
 class MailingSettingsUpdateForm(forms.ModelForm):
+    """Форма обновления рассылки"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,20 +29,18 @@ class MailingSettingsUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Mailing
-        exclude = ('subject', 'body', 'user')
+        exclude = ('subject', 'body', 'user', 'next_attempt')
 
 
 class MailingSettingsManagerUpdateForm(MailingSettingsUpdateForm):
+    """Форма оновления настроек рассылки для менеджера"""
+
     subject = forms.CharField(disabled=True, label="Тема")
     body = forms.CharField(disabled=True, label="Содержание рассылки")
-    # customers = forms.MultipleChoiceField(disabled=True, label='Клиенты')
     start_time = forms.DateTimeField(disabled=True, label='Дата начала рассылки:')
-    # interval = forms.ChoiceField(disabled=True, label='Периодичность:')
-
-
 
     class Meta:
         model = Mailing
-        exclude = ('user', 'customers', 'interval')
+        exclude = ('user', 'customers', 'interval',  'next_attempt')
 
 

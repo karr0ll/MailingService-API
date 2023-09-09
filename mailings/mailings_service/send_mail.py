@@ -8,7 +8,7 @@ def do_send_mail(**kwargs):
     subject = kwargs.get('subject')
     message = kwargs.get('message')
     recipients = kwargs.get('recipients')
-    do_send_mail(
+    send_mail(
         subject=f'{subject}',
         message=f'{message}',
         from_email=settings.EMAIL_HOST_USER,

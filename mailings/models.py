@@ -31,9 +31,9 @@ class Mailing(models.Model):
     creation_date = models.DateTimeField(verbose_name='Дата создания', auto_now=True)
     interval = models.CharField(max_length=7, choices=MAILING_PERIOD_CHOICES, default='daily',
                                 verbose_name='Периодичность')
-    status = models.CharField(max_length=8, choices=MAILING_STATUS_CHOICES, default='active',
+    status = models.CharField(max_length=8, choices=MAILING_STATUS_CHOICES, default='enabled',
                               verbose_name='Статус рассылки')
-
+    next_attempt = models.DateTimeField(verbose_name='Дата последней отправки', **NULLABLE)
 
     def __str__(self):
         return f'{self.subject}'
