@@ -49,35 +49,6 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
-name = "django-cron"
-version = "0.6.0"
-description = "Running python crons in a Django project"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-cron-0.6.0.tar.gz", hash = "sha256:dc3c0d3433a2e4e7012f77f6d8415ad90367ba068649db2674325bc36f935841"},
-    {file = "django_cron-0.6.0-py3-none-any.whl", hash = "sha256:016203554748512b7f19d7363b4fde8741c6ff63fe8a15051f3031f4a0506a41"},
-]
-
-[package.dependencies]
-Django = ">=3.2"
-
-[[package]]
-name = "django-crontab"
-version = "0.7.1"
-description = "dead simple crontab powered job scheduling for django"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-crontab-0.7.1.tar.gz", hash = "sha256:1201810a212460aaaa48eb6a766738740daf42c1a4f6aafecfb1525036929236"},
-]
-
-[package.dependencies]
-Django = ">=1.8"
-
-[[package]]
 name = "pillow"
 version = "10.0.0"
 description = "Python Imaging Library (Fork)"
@@ -246,4 +217,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f0bcc493bd00ede77ea5684f29e8c41928f7d43b9499eb459f3f42d8a102a56b"
+content-hash = "4c425d25589fb4d2600ed4f8b80f918b2672a9365373ac30e835a69594e77cbf"
