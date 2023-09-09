@@ -25,7 +25,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,14 +37,6 @@ INSTALLED_APPS = [
     'customers',
     'mailings',
     'blog',
-]
-
-CRONJOBS = [
-    ('* * * * *', 'mailing_service_coursework.mailings.mailings_service.cron_functions.cron_task')
-]
-
-CRONCLASSES = [
-    'mailings.mailings_service.cron_functions.MyCronJob'
 ]
 
 MIDDLEWARE = [
