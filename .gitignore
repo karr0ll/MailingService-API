@@ -1,1 +1,17 @@
 /.env
+/blog/migrations/0001_initial.py
+/customers/migrations/0001_initial.py
+/mailings/migrations/0001_initial.py
+/users/migrations/0001_initial.py
+/customers/migrations/0002_initial.py
+/mailings/migrations/0002_initial.py
+/blog/migrations/__init__.py
+/.idea/dataSources.xml
+/.idea/dbnavigator.xml
+/.idea/mailing_service_coursework.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/profiles_settings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
+/.idea/.gitignore
