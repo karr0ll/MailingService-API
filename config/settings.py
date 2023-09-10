@@ -140,8 +140,8 @@ LOGOUT_REDIRECT_URL = '/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
 
 EMAIL_HOST_USER = os.getenv('YANDEX_MAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('YANDEX_MAIL_PASSWORD')
