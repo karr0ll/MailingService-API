@@ -59,28 +59,31 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         if form.is_valid():
             customers = form.cleaned_data['customers']
             new_mailing = form.save()
-            if new_mailing.interval == 'daily':
-                new_mailing.next_attempt = new_mailing.start_time + timedelta(minutes=1) # для проверки
+            if new_mailing.start_time > current_time:
+                new_mailing.next_attempt = new_mailing.start_time
+            else:
+                if new_mailing.interval == 'daily':
+                    new_mailing.next_attempt = new_mailing.start_time + timedelta(minutes=1) # для проверки
 
-            if new_mailing.interval == 'weekly':
-                new_mailing.next_attempt = new_mailing.start_time + timedelta(days=7)
+                if new_mailing.interval == 'weekly':
+                    new_mailing.next_attempt = new_mailing.start_time + timedelta(days=7)
 
-            if new_mailing.interval == 'monthly':
-                today = datetime.today()
-                days = calendar.monthrange(today.year, today.month)[1]
-                new_mailing.next_attempt = current_time + timedelta(days=days)
+                if new_mailing.interval == 'monthly':
+                    today = datetime.today()
+                    days = calendar.monthrange(today.year, today.month)[1]
+                    new_mailing.next_attempt = current_time + timedelta(days=days)
 
-            for customer in customers:
-                new_mailing.customers.add(customer.pk)
-            new_mailing.save()
-            send_mail_and_log(
-                new_mailing=new_mailing,
-                current_time=current_time,
-                customers=customers,
-                user=user,
-                status=status,
-                error_message=error_message
-            )
+                for customer in customers:
+                    new_mailing.customers.add(customer.pk)
+                new_mailing.save()
+                send_mail_and_log(
+                    new_mailing=new_mailing,
+                    current_time=current_time,
+                    customers=customers,
+                    user=user,
+                    status=status,
+                    error_message=error_message
+                )
         return super().form_valid(form)
 
 
