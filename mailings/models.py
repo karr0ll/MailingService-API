@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 
 from customers.models import Customer
@@ -14,6 +12,7 @@ MAILING_STATUS_CHOICES = (
 )
 
 MAILING_PERIOD_CHOICES = (
+    ('every_minute', 'Каждую минуту'),
     ('daily', 'Ежедневно'),
     ('weekly', 'Еженедельно'),
     ('monthly', 'Ежемесячно')
@@ -29,7 +28,7 @@ class Mailing(models.Model):
 
     start_time = models.DateTimeField(verbose_name='Дата начала рассылки', **NULLABLE)
     creation_date = models.DateTimeField(verbose_name='Дата создания', auto_now=True)
-    interval = models.CharField(max_length=7, choices=MAILING_PERIOD_CHOICES, default='daily',
+    interval = models.CharField(max_length=15, choices=MAILING_PERIOD_CHOICES, default='daily',
                                 verbose_name='Периодичность')
     status = models.CharField(max_length=8, choices=MAILING_STATUS_CHOICES, default='enabled',
                               verbose_name='Статус рассылки')

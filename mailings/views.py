@@ -62,8 +62,11 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
             if new_mailing.start_time > current_time:
                 new_mailing.next_attempt = new_mailing.start_time
             else:
+                if new_mailing.interval == 'every_minute':
+                    new_mailing.next_attempt = new_mailing.start_time + timedelta(minutes=1)
+
                 if new_mailing.interval == 'daily':
-                    new_mailing.next_attempt = new_mailing.start_time + timedelta(minutes=1) # для проверки
+                    new_mailing.next_attempt = new_mailing.start_time + timedelta(days=1)
 
                 if new_mailing.interval == 'weekly':
                     new_mailing.next_attempt = new_mailing.start_time + timedelta(days=7)
@@ -202,8 +205,11 @@ class MailingSettingsUpdateView(LoginRequiredMixin, UpdateView):
                 customers = form.cleaned_data['customers']
                 updated_settings = form.save()
 
+                if updated_settings.interval == 'every_minute':
+                    updated_settings.next_attempt = current_time + timedelta(minutes=1)
+
                 if updated_settings.interval == 'daily':
-                    updated_settings.next_attempt = current_time + timedelta(minutes=1)  # для проверки
+                    updated_settings.next_attempt = current_time + timedelta(days=1)
 
                 elif updated_settings.interval == 'weekly':
                     updated_settings.next_attempt = current_time + timedelta(days=7)
