@@ -15,8 +15,8 @@ def cron_task():
     mailings: QuerySet = Mailing.objects.filter(status='enabled')
 
     for mailing in mailings:
-        next_attempt: str = mailing.next_attempt.strftime('%Y-%m-%d %H:%M')
-        if next_attempt == current_time_str:
+        next_attempt_str: str = mailing.next_attempt.strftime('%Y-%m-%d %H:%M')
+        if next_attempt_str == current_time_str:
             print('email sent')
             cronjob_send_mail_and_log(
                 new_mailing=mailing,

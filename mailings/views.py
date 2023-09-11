@@ -54,7 +54,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
         current_time = datetime.now().replace(tzinfo=pytz.UTC)
         status = ''
         error_message = ''
-        user = form.instance.user = self.request.user
+        form.instance.user = self.request.user
 
         if form.is_valid():
             customers = form.cleaned_data['customers']
@@ -83,7 +83,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
                     new_mailing=new_mailing,
                     current_time=current_time,
                     customers=customers,
-                    user=user,
+                    user=form.instance.user,
                     status=status,
                     error_message=error_message
                 )
@@ -121,7 +121,7 @@ class MailingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         """Метод проверки разрешений пользователя"""
         object_ = self.get_object()
         user = self.request.user
-        if object_.user != user:
+        if object_.user == user:
             return object_
         else:
             raise PermissionError('Редактировать рассылки может только пользователь')
@@ -133,7 +133,7 @@ class MailingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
     def get_queryset(self):
         """Метод получения данных из базы"""
         queryset = super().get_queryset()
-        queryset = queryset.filter(user=self.request.user.id)
+        queryset = queryset.filter(user=self.request.user)
         return queryset
 
 
