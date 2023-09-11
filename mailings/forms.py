@@ -9,6 +9,7 @@ class MailingCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
+            self.fields['start_time'].required = True
             field.widget.attrs['class'] = 'form-control'
 
     class Meta:
