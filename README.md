@@ -7,9 +7,9 @@
 
 ### Использованные технологии: 
 * Django 4.2.3
-* django-crontab==0.7.1
-* psycopg2==2.9.7
-* pytest==7.2.1
-* redis==5.0.0
+* django-crontab 0.7.1
+* psycopg2 2.9.7
+* pytest 7.2.1
+* redis 5.0.0
 * Bootstrap 5
 
